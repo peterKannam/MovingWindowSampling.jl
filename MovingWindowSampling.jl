@@ -157,13 +157,15 @@ function movingWindowSampling(depVar, predVars, heights, windowSize::Int64,stepS
                 allCoeffDataItr[windowItr,2] = heights[paneIdx]
                 allCoeffDataItr[windowItr,3] = r2
             end
-        elseif analysis == "corr"
+            coeffItr[windowItr,:] .= coeffs
+        elseif analysis == "cor"
             coeffs = cor(depVar[paneIdx],predVars[paneIdx,:], dims = 1)
             if !onlyReturnCoeffs
                 #record coeffs and relevant heights i
                 allCoeffDataItr[windowItr,1] = coeffs
                 allCoeffDataItr[windowItr,2] = heights[paneIdx]
             end
+            coeffItr[windowItr,:] = coeffs
         elseif analysis == "dom"
             coeffs,coeffsRaw,resultsMatrix,avgMatrix = dominanceAnalysis(depVar[paneIdx],predVars[paneIdx,:])
             if !onlyReturnCoeffs
@@ -175,8 +177,9 @@ function movingWindowSampling(depVar, predVars, heights, windowSize::Int64,stepS
                 allCoeffDataItr[windowItr,4] = resultsMatrix
                 allCoeffDataItr[windowItr,5] = avgMatrix
             end
-        end
             coeffItr[windowItr,:] .= coeffs
+        end
+
     end
     return coeffItr,allCoeffDataItr,windowNum
 end
